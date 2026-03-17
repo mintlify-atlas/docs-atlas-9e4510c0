@@ -1,97 +1,61 @@
 ---
-title: "Introduction"
-description: "Welcome to the new home for your documentation"
+title: "Lucky Roll Dice"
+description: "A two-player browser-based dice game where fate, patience, and strategy decide the winner."
 ---
 
-## Setting up
-
-Get your documentation site up and running in minutes.
-
-<Card
-  title="Start here"
-  icon="rocket"
-  href="/quickstart"
-  horizontal
->
-  Follow our three step quickstart guide.
-</Card>
-
-## Make it yours
-
-Design a docs site that looks great and empowers your users.
-
-<Columns cols={2}>
-  <Card
-    title="Edit locally"
-    icon="pen-to-square"
-    href="/development"
-  >
-    Edit your docs locally and preview them in real time.
+<CardGroup cols={2}>
+  <Card title="How to play" icon="dice" href="/gameplay/rules">
+    Learn the rules, understand turns, and start playing in minutes.
   </Card>
-  <Card
-    title="Customize your site"
-    icon="palette"
-    href="/essentials/settings"
-  >
-    Customize the design and colors of your site to match your brand.
+  <Card title="Quick start" icon="rocket" href="/quickstart">
+    Get the game running locally on your machine.
   </Card>
-    <Card
-    title="Set up navigation"
-    icon="map"
-    href="/essentials/navigation"
-  >
-    Organize your docs to help users find what they need and succeed with your product.
+  <Card title="Scoring system" icon="trophy" href="/gameplay/scoring">
+    Understand current scores, global scores, and how points accumulate.
   </Card>
-  <Card
-    title="API documentation"
-    icon="terminal"
-    href="/api-reference/introduction"
-  >
-    Auto-generate API documentation from OpenAPI specifications.
+  <Card title="Code reference" icon="code" href="/reference/game-logic">
+    Explore the JavaScript functions that power the game.
   </Card>
-</Columns>
+</CardGroup>
 
-## Create beautiful pages
+## What is Lucky Roll Dice?
 
-Everything you need to create world-class documentation.
+Lucky Roll Dice is a two-player browser-based game built with vanilla JavaScript, HTML, and CSS. Two players take turns rolling a six-sided die, racing to reach **100 points** first. Every roll is a gamble — accumulate points greedily, but if you roll a **1**, you lose everything accumulated in that turn.
 
-<Columns cols={2}>
-  <Card
-    title="Write with MDX"
-    icon="pen-fancy"
-    href="/essentials/markdown"
-  >
-    Use MDX to style your docs pages.
-  </Card>
-  <Card
-    title="Code samples"
-    icon="code"
-    href="/essentials/code"
-  >
-    Add sample code to demonstrate how to use your product.
-  </Card>
-  <Card
-    title="Images"
-    icon="image"
-    href="/essentials/images"
-  >
-    Display images and other media.
-  </Card>
-  <Card
-    title="Reusable snippets"
-    icon="recycle"
-    href="/essentials/reusable-snippets"
-  >
-    Write once and reuse across your docs.
-  </Card>
-</Columns>
+## Key features
 
-## Need inspiration?
+<CardGroup cols={2}>
+  <Card title="Turn-based play" icon="arrow-right-arrow-left">
+    Players alternate turns, each building up their current score before deciding to hold or risk rolling again.
+  </Card>
+  <Card title="Visual dice faces" icon="dice-six">
+    The dice renders authentic dot patterns for each face value (1–6) using CSS layout and FontAwesome icons.
+  </Card>
+  <Card title="Hold mechanic" icon="hand">
+    Banking your current score to your global total is the key strategic decision every turn.
+  </Card>
+  <Card title="Responsive design" icon="mobile">
+    Optimized layout for both small screens and large desktop displays (1280px+ breakpoint).
+  </Card>
+</CardGroup>
 
-<Card
-  title="See complete examples"
-  icon="stars"
-  href="https://mintlify.com/customers"
->
-  Browse our showcase of exceptional documentation sites.
-</Card>
+## How the game works
+
+<Steps>
+  <Step title="Start a new game">
+    Click **NEW GAME** to reset all scores. Player 1 always goes first, indicated by the red dot next to their name.
+  </Step>
+  <Step title="Roll the dice">
+    Click **ROLL DICE** to roll. If the result is 2–6, the points are added to your current score. If you roll a **1**, your current score resets to 0 and the turn passes to your opponent.
+  </Step>
+  <Step title="Hold your score">
+    Click **HOLD** to bank your current score into your global total. The turn then passes to your opponent.
+  </Step>
+  <Step title="Win the game">
+    The first player to reach **100 global points** wins. A browser alert announces the winner and the game reloads.
+  </Step>
+</Steps>
+
+<Note>
+  The game is served by a lightweight Express.js server and requires Node.js to run locally. See the [setup guide](/local/setup) for instructions.
+</Note>

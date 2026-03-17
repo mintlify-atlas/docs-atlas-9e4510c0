@@ -1,0 +1,102 @@
+---
+title: "Running the game"
+description: "Start the server and open Lucky Roll Dice in your browser."
+---
+
+## Starting the server
+
+<Steps>
+  <Step title="Start the server">
+    From the project root, run:
+
+    <CodeGroup>
+
+    ```bash Default port (3000)
+    npm start
+    ```
+
+    ```bash Custom port
+    PORT=8080 npm start
+    ```
+
+    </CodeGroup>
+
+    `npm start` executes `node server.js` as defined in `package.json`.
+
+    When the server is ready you will see the following output in your terminal:
+
+    ```text
+    Aplicación escuchando en el puerto 3000
+    ```
+  </Step>
+
+  <Step title="Open the game in your browser">
+    Navigate to the appropriate URL based on the port you chose:
+
+    | Command | URL |
+    |---|---|
+    | `npm start` | `http://localhost:3000` |
+    | `PORT=8080 npm start` | `http://localhost:8080` |
+  </Step>
+
+  <Step title="Stop the server">
+    Press `Ctrl+C` in the terminal where the server is running.
+  </Step>
+</Steps>
+
+<Note>
+  `server.js` calls `express.static('public')`, which tells Express to serve files from a `public/` subdirectory. However, `index.html` and the game assets (`js/`, `css/`, `assets/`) live in the project root, not inside `public/`. If you see a blank page or a 404 when visiting `http://localhost:3000`, this path mismatch is the likely cause. To fix it, update the static path in `server.js` to point to the project root:
+
+  ```javascript
+  app.use(express.static('.'));
+  ```
+</Note>
+
+## Alternative: open without a server
+
+Because Lucky Roll Dice is a static HTML/JS/CSS project with no build step, you can open `index.html` directly in your browser by double-clicking the file or dragging it into a browser tab.
+
+<Tip>
+  Opening the file directly is useful for quick checks. However, fonts stored in `assets/fonts/` and some asset paths may not resolve correctly without the server. Use `npm start` for the full experience.
+</Tip>
+
+## Troubleshooting
+
+<AccordionGroup>
+  <Accordion title="Port already in use">
+    If port 3000 is occupied by another process, start the server on a different port:
+
+    ```bash
+    PORT=8080 npm start
+    ```
+
+    Then open `http://localhost:8080` in your browser.
+  </Accordion>
+
+  <Accordion title="Page not loading">
+    1. Confirm your Node.js version is 16 or later:
+
+       ```bash
+       node --version
+       ```
+
+    2. Delete `node_modules` and reinstall dependencies:
+
+       ```bash
+       rm -rf node_modules
+       npm install
+       ```
+
+    3. Restart the server with `npm start` and try again.
+
+    <Warning>
+      If the terminal shows the server started successfully but the browser shows a blank page, check the `express.static` path in `server.js`. The directory passed to `express.static` must match the location of `index.html`. See the note above for the fix.
+    </Warning>
+  </Accordion>
+
+  <Accordion title="Fonts not loading">
+    The Lato font family is stored in `assets/fonts/` and is referenced via CSS. Font files are subject to browser security restrictions when loaded from the local filesystem.
+
+    Make sure the Express server is running (`npm start`) so font files are served over HTTP rather than the `file://` protocol. If fonts still fail to load, confirm that the `assets/` directory is accessible from the server root (see the static path note above).
+  </Accordion>
+</AccordionGroup>

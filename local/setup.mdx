@@ -1,0 +1,89 @@
+---
+title: "Setup"
+description: "Install dependencies and configure your environment to run Lucky Roll Dice locally."
+---
+
+## Prerequisites
+
+Before you begin, make sure the following tools are installed on your machine:
+
+- **Node.js v16 or later** — includes `npm`. Download from [nodejs.org](https://nodejs.org).
+- **Git** — to clone the repository.
+
+Verify your versions:
+
+```bash
+node --version
+npm --version
+git --version
+```
+
+## Installation
+
+<Steps>
+  <Step title="Clone the repository">
+    ```bash
+    git clone https://github.com/dumitrusf/roll-Dice.git
+    ```
+  </Step>
+
+  <Step title="Navigate into the project directory">
+    ```bash
+    cd roll-Dice
+    ```
+  </Step>
+
+  <Step title="Install dependencies">
+    ```bash
+    npm install
+    ```
+
+    This installs the two production dependencies declared in `package.json`:
+
+    | Package | Version | Purpose |
+    |---|---|---|
+    | `express` | `^4.19.2` | Lightweight Node.js web server used to serve static assets |
+    | `reset-css` | `^5.0.2` | CSS reset library included in the project stylesheet |
+
+    <Note>
+      `reset-css` is listed as a dependency but its styles are already copied into `css/reset.css` in the repository. You do not need to import it manually.
+    </Note>
+  </Step>
+</Steps>
+
+## Project structure
+
+After cloning, the project layout looks like this:
+
+```text
+roll-Dice/
+├── index.html          # Main game page
+├── server.js           # Express static server
+├── package.json
+├── package-lock.json
+├── js/
+│   ├── script.js       # Game logic
+│   └── bootstrap.bundle.js
+├── css/
+│   ├── styles.css      # Custom styles
+│   ├── bootstrap.css
+│   ├── normalize.css
+│   └── reset.css
+└── assets/
+    ├── favicon/        # Browser icons
+    └── fonts/          # Lato font family
+```
+
+<Tip>
+  All game assets — HTML, CSS, JavaScript, and fonts — are self-contained in the project root and its subdirectories. No build step or bundler is required.
+</Tip>
+
+## Dependencies breakdown
+
+### express
+
+`express` is a minimal Node.js web framework. In this project it is used solely to serve the static files in the project directory so the game is accessible at a local URL.
+
+### reset-css
+
+`reset-css` provides a CSS reset that removes default browser styling, ensuring consistent appearance across different browsers. The reset rules are applied before the project's own styles in `css/styles.css`.

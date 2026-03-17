@@ -1,0 +1,134 @@
+---
+title: "Rules"
+description: "How to play Lucky Roll Dice — turns, actions, and what happens when you roll a 1."
+---
+
+Lucky Roll Dice is a two-player game played with a single six-sided die. Players alternate turns, accumulating points and deciding when to bank them. The first player to reach **100 global points** wins.
+
+## Players and the turn indicator
+
+Each game involves exactly two players — **Player 1** and **Player 2**. A red dot (a FontAwesome circle icon, color `#eb4d4c`) appears next to the active player's name to show whose turn it is.
+
+When you click **NEW GAME**, all scores reset to 0 and the red dot is placed next to Player 1's name, giving them the first turn.
+
+<Warning>
+  You must click **NEW GAME** before rolling or holding. Without it, the red dot has no position and the game has no active player — the roll and hold buttons will not function correctly.
+</Warning>
+
+## Actions available on your turn
+
+On your turn, you have three buttons available:
+
+<CardGroup cols={3}>
+  <Card title="NEW GAME" icon="rotate-right">
+    Resets all global and current scores to 0 and places the turn indicator on Player 1. Use this at the start of every match.
+  </Card>
+  <Card title="ROLL DICE" icon="dice">
+    Generates a random result between 1 and 6. The outcome either adds to your current score or ends your turn immediately.
+  </Card>
+  <Card title="HOLD" icon="hand">
+    Banks your current score into your global total, resets your current score to 0, and passes the turn to your opponent.
+  </Card>
+</CardGroup>
+
+## How a turn works
+
+<Steps>
+  <Step title="Start your turn">
+    The red dot appears next to your name. Your current score displays 0 (or carries over from the turn start — it is always reset after a hold or a roll of 1).
+  </Step>
+
+  <Step title="Roll the die">
+    Click **ROLL DICE**. A random integer from 1 to 6 is generated using:
+
+    ```javascript
+    function generateRandomInt(min = 0, max = 6) {
+      min = Math.ceil(min);
+      max = Math.floor(max);
+      return Math.floor(Math.random() * (max - min)) + min;
+    }
+    ```
+
+    The die face rendered on screen shows the result as a dot pattern.
+  </Step>
+
+  <Step title="Check the result">
+    Two outcomes are possible:
+
+    - **Rolled 2–6** — the number is added to your current score. You remain in your turn and can roll again or hold.
+    - **Rolled 1** — your current score resets to 0 and your turn ends immediately. Play passes to your opponent.
+  </Step>
+
+  <Step title="Decide: roll again or hold">
+    If you rolled 2–6, you choose:
+
+    - **Roll again** — take the risk of losing your accumulated current score if you roll a 1.
+    - **Hold** — safely add your current score to your global total, then pass the turn.
+  </Step>
+
+  <Step title="Turn ends">
+    Your turn ends either by rolling a 1 (forced) or clicking **HOLD** (voluntary). The red dot moves to your opponent and their turn begins.
+  </Step>
+</Steps>
+
+## The roll-1 penalty
+
+<Warning>
+  Rolling a 1 immediately resets your current score to 0 and passes the turn to your opponent. You lose every point accumulated in that turn — your global score is not affected, but all unbanked progress is gone.
+</Warning>
+
+This is enforced directly in `keepRoundScore`:
+
+```javascript
+function keepRoundScore(cs) {
+  let roundScore = parseInt(cs.textContent) + randomNumber;
+  const currentPlayer = checkDotPlayerPosition();
+  if (currentPlayer === "player1" && randomNumber === 1) {
+    cs.textContent = "0";
+    player2.append(dotPlayer); // pass turn to player2
+    return 0;
+  }
+  if (currentPlayer === "player2" && randomNumber === 1) {
+    cs.textContent = "0";
+    player1.append(dotPlayer); // pass turn to player1
+    return 0;
+  }
+  cs.textContent = roundScore;
+  return roundScore;
+}
+```
+
+## Holding with 0 current score
+
+The **HOLD** button is always active — you can click it even when your current score is 0. Doing so simply adds 0 to your global score and passes the turn. There is no benefit to holding a 0, so avoid it unless you want to give your opponent the turn.
+
+<Tip>
+  If you roll a 1 and the turn passes automatically, there is no need to click **HOLD**. The turn has already ended and your opponent is now active.
+</Tip>
+
+## Strategy hints
+
+<AccordionGroup>
+  <Accordion title="The risk vs. reward trade-off">
+    Every roll beyond your first is a gamble. The probability of rolling a 1 on any single roll is 1 in 6 (approximately 17%). The longer you stay in your turn, the more you stand to lose. A common stopping point is a current score of 15–20 per turn, which keeps steady progress without excessive exposure.
+  </Accordion>
+
+  <Accordion title="Watch your opponent's global score">
+    If your opponent is close to 100, you may need to take more risk per turn to catch up. Conversely, if you are ahead, conservative play — holding early — limits opportunities for your opponent to overtake you.
+  </Accordion>
+
+  <Accordion title="The opening turn advantage">
+    Player 1 always goes first. Player 2 has the advantage of knowing Player 1's global score before deciding when to hold on their own turn. Use this information to calibrate risk.
+  </Accordion>
+</AccordionGroup>
+
+## Related pages
+
+<CardGroup cols={2}>
+  <Card title="Scoring" icon="trophy" href="/gameplay/scoring">
+    Understand how current score and global score are calculated and updated.
+  </Card>
+  <Card title="Winning" icon="flag-checkered" href="/gameplay/winning">
+    Learn the win condition and what happens when a player reaches 100 points.
+  </Card>
+</CardGroup>

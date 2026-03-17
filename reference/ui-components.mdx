@@ -1,0 +1,225 @@
+---
+title: "UI components"
+description: "Reference for the HTML structure and CSS styling of Lucky Roll Dice."
+---
+
+This page covers every visual element in Lucky Roll Dice — the HTML structure, CSS design tokens, the dice dot index layout, responsive breakpoints, and the complete DOM ID reference.
+
+## HTML structure
+
+The page has a single `<main>` element that holds all game content. Inside it, the layout follows this order:
+
+```html
+<main>
+  <!-- NEW GAME button -->
+  <div type="button" class="btn" id="startGame">NEW GAME</div>
+
+  <!-- Player 1 panel -->
+  <div class="player-container">
+    <div class="container-player">
+      <span class="title" id="player1Title">PLAYER 1</span>
+      <span class="global-score" id="GS1">0</span>
+    </div>
+    <div class="current-score-container">
+      <span class="current-score-title">CURRENT</span>
+      <span class="score" id="CS1"> 0 </span>
+    </div>
+  </div>
+
+  <!-- Dice -->
+  <div class="dice" id="dice">
+    <i class="dot fa-solid fa-circle"></i>  <!-- index 0: top-left -->
+    <i class="dot fa-solid fa-circle"></i>  <!-- index 1: top-center -->
+    <i class="dot fa-solid fa-circle"></i>  <!-- index 2: top-right -->
+    <i class="dot fa-solid fa-circle"></i>  <!-- index 3: middle-left -->
+    <i class="dot fa-solid fa-circle"></i>  <!-- index 4: center -->
+    <i class="dot fa-solid fa-circle"></i>  <!-- index 5: middle-right -->
+    <i class="dot fa-solid fa-circle"></i>  <!-- index 6: bottom-left -->
+    <i class="dot fa-solid fa-circle"></i>  <!-- index 7: bottom-center -->
+    <i class="dot fa-solid fa-circle"></i>  <!-- index 8: bottom-right -->
+  </div>
+
+  <!-- Action buttons -->
+  <div class="actions">
+    <div type="button" class="btn roll-dice" id="rollDice">ROLL DICE</div>
+    <div type="button" class="btn hold-score" id="holdScore">HOLD</div>
+  </div>
+
+  <!-- Player 2 panel (mirrors Player 1) -->
+  <div class="player-container">
+    <div class="container-player">
+      <span class="title" id="player2Title">PLAYER 2</span>
+      <span class="global-score" id="GS2">0</span>
+    </div>
+    <div class="current-score-container">
+      <span class="current-score-title">CURRENT</span>
+      <span class="score" id="CS2"> 0 </span>
+    </div>
+  </div>
+</main>
+```
+
+### Player panel structure
+
+Each player panel is composed of two sub-sections:
+
+- **`.container-player`** — Contains the player title (`#player1Title` / `#player2Title`) and their global score (`#GS1` / `#GS2`). The turn indicator dot (`dotPlayer`) is appended directly into the title `<span>` at runtime.
+- **`.current-score-container`** — Contains the label `CURRENT` and the current (unbanked) score (`#CS1` / `#CS2`). This section has the accent background color (`#eb4d4c`) applied via CSS.
+
+### Dice structure
+
+`#dice` is a `<div>` containing exactly 9 `<i>` elements, each with the classes `dot fa-solid fa-circle`. They form a 3×3 flexbox grid. All 9 dots are rendered at all times — inactive dots are colored `#fff` (invisible against the white dice background), while active dots are colored `#eb4d4c` (red). See the [dice dot index map](#dice-dot-index-map) for which indices are active per face value.
+
+### Action buttons
+
+Both **ROLL DICE** and **HOLD** are `<div>` elements styled as buttons (class `btn`) inside a `.actions` wrapper. They use `type="button"` as an HTML attribute even though `<div>` does not natively support it — this is cosmetic only and has no effect on behavior. All interactivity is handled by `addEventListener("click", ...)` in `js/script.js`.
+
+## CSS design tokens
+
+<Columns cols={2}>
+  <Card title="Primary accent" icon="palette">
+    `#eb4d4c` — Applied to global score text, current score container background, active dice dots, button icons, and the turn indicator dot.
+  </Card>
+  <Card title="Font family" icon="font">
+    Lato (Thin, Light, Regular, Bold, Black, plus italic variants). Loaded via `@font-face` from `assets/fonts/`. No external CDN dependency.
+  </Card>
+  <Card title="Body background" icon="image">
+    `conic-gradient` with warm wood tones: `#A27648`, `#89553B`, `#966C3B`, `#A08458`, `#AD9A88`, `#AD8756`. Radiates from the center of the viewport.
+  </Card>
+  <Card title="Card background" icon="square">
+    `linear-gradient(270deg, #FFF 0%, #FFF 43.72%, ...)` — white fading to a near-white/light grey. Applied to the main game card.
+  </Card>
+</Columns>
+
+### Full token reference
+
+| Token | Value | Usage |
+|-------|-------|-------|
+| Primary accent | `#eb4d4c` | Scores, dots, button icons, turn indicator |
+| Body background | `conic-gradient` (wood tones) | `<body>` fill |
+| Card background | `linear-gradient(270deg, #FFF ...)` | Main game card |
+| Dice background | `#ffffff` | `#dice` container fill |
+| Dice box shadow | `0px 5px 16.8px 0px rgba(0, 0, 0, 0.20)` | Elevation on dice |
+| Dice border radius | `5px` | `#dice` corners |
+| Current score card radius | `5px` | `.current-score-container` corners |
+| Main card border radius | `min(10px, 5vw)` | Outer game card corners |
+| Font family | Lato | All text |
+
+### Color palette
+
+<Color variant="compact">
+  <Color.Item name="primary-accent" value="#eb4d4c" />
+  <Color.Item name="wood-dark" value="#89553B" />
+  <Color.Item name="wood-mid" value="#966C3B" />
+  <Color.Item name="wood-tan" value="#A27648" />
+  <Color.Item name="wood-warm" value="#A08458" />
+  <Color.Item name="wood-light" value="#AD9A88" />
+  <Color.Item name="wood-gold" value="#AD8756" />
+</Color>
+
+## Dice dot index map
+
+The 9 `.dot` elements inside `#dice` are indexed 0–8 in DOM order, forming a 3×3 grid:
+
+```
+Index layout:
+
+  0 | 1 | 2
+  ---------
+  3 | 4 | 5
+  ---------
+  6 | 7 | 8
+```
+
+`showDiceFaceGenerated()` resets all dots to `#fff` on every call, then activates specific indices in `#eb4d4c` based on `randomNumber`:
+
+| Face | Active dot indices | Pattern description |
+|------|-------------------|---------------------|
+| 1 | 4 | Single center dot |
+| 2 | 0, 8 | Top-left, bottom-right diagonal |
+| 3 | 0, 4, 8 | Full diagonal |
+| 4 | 0, 2, 6, 8 | Four corners |
+| 5 | 0, 2, 4, 6, 8 | Four corners plus center |
+| 6 | 0, 1, 2, 6, 7, 8 | Top row and bottom row |
+
+<Note>
+  Indices 3 and 5 (middle-left and middle-right) are never activated. A standard physical die uses those positions only for the face-6 side columns, but the CSS grid layout here achieves the 6-dot pattern using the top and bottom rows instead.
+</Note>
+
+## Responsive breakpoints
+
+The layout uses a **mobile-first** approach. The default styles produce a vertical column layout, and a single media query at `1280px` switches to a side-by-side desktop layout.
+
+### Mobile (default, below 1280px)
+
+```css
+/* Default column layout — no media query needed */
+main {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+```
+
+- Player 1 panel sits above the dice.
+- The dice and action buttons are centered.
+- Player 2 panel sits below the dice.
+- All elements stack vertically.
+
+### Desktop (min-width: 1280px)
+
+```css
+@media screen and (min-width: 1280px) {
+  /* Players positioned absolutely left and right of the dice */
+  .player-container:first-of-type {
+    position: absolute;
+    left: /* calculated offset */;
+    transform: /* vertical centering transform */;
+  }
+  .player-container:last-of-type {
+    position: absolute;
+    right: /* calculated offset */;
+    transform: /* vertical centering transform */;
+  }
+}
+```
+
+- Player panels are taken out of flow with `position: absolute` and placed to the left and right of the centered dice.
+- The dice and action buttons remain centered in the main card.
+- `transform` properties are applied for precise vertical alignment against the dice container.
+
+<Info>
+  The `1280px` breakpoint corresponds to a common laptop/desktop threshold. On screens narrower than this — including most tablets in portrait orientation — the stacked mobile layout is used.
+</Info>
+
+## DOM IDs reference
+
+Every interactive element in the game is accessed by ID in `js/script.js`. The table below maps each ID to its element type, its JavaScript variable name, and its purpose.
+
+| ID | Element | JS variable | Purpose |
+|----|---------|-------------|----------|
+| `#startGame` | `<div>` | `startGame` | Triggers `beginGame()` on click |
+| `#rollDice` | `<div>` | `rollDice` | Triggers `generateRandomFace()` on click |
+| `#holdScore` | `<div>` | `holdScore` | Triggers `handleHoldScore()` on click |
+| `#player1Title` | `<span>` | `player1` | Player 1 name label; receives `dotPlayer` when Player 1 is active |
+| `#player2Title` | `<span>` | `player2` | Player 2 name label; receives `dotPlayer` when Player 2 is active |
+| `#GS1` | `<span>` | `globalScore1` | Player 1 global (banked) score display |
+| `#GS2` | `<span>` | `globalScore2` | Player 2 global (banked) score display |
+| `#CS1` | `<span>` | `currentScore1` | Player 1 current (unbanked) score display |
+| `#CS2` | `<span>` | `currentScore2` | Player 2 current (unbanked) score display |
+| `#dice` | `<div>` | `dice` | Dice face container; parent of all 9 `.dot` elements |
+
+<Note>
+  The `dice` variable is selected but not directly mutated by any game logic function. Dot colors are updated via `dotElements` (`querySelectorAll(".dot")`), not through the `#dice` parent.
+</Note>
+
+## Related pages
+
+<CardGroup cols={2}>
+  <Card title="Game logic" icon="code" href="/reference/game-logic">
+    Detailed reference for every JavaScript function, including parameters, return values, and side effects.
+  </Card>
+  <Card title="Rules" icon="book" href="/gameplay/rules">
+    How turns work, the roll-1 penalty, and the hold mechanic explained for players.
+  </Card>
+</CardGroup>

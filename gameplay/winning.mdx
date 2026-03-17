@@ -1,0 +1,98 @@
+---
+title: "Winning"
+description: "How to win Lucky Roll Dice and what happens when a player reaches 100 points."
+---
+
+The first player whose global score reaches **100 or more** wins the game. The win is checked after every **HOLD** — not after individual rolls.
+
+## Win condition
+
+After you click **HOLD**, the game adds your current score to your global total and immediately checks whether the new total meets or exceeds 100:
+
+```javascript
+function keepGlobalScore(cs, gs, player) {
+  let mainScore = parseInt(cs.textContent) + parseInt(gs.textContent);
+  gs.textContent = mainScore;
+  cs.textContent = 0;
+  player.append(dotPlayer); // move dot to next player first
+  const currentPlayer = checkDotPlayerPosition();
+  if (currentPlayer === "player2" && mainScore >= 100) {
+    alert(`player 1 you win!`);
+    location.reload();
+  } else if (currentPlayer === "player1" && mainScore >= 100) {
+    alert(`player 2 you win!`);
+    location.reload();
+  }
+}
+```
+
+The threshold is `>= 100`, so a global score of exactly 100 is enough to win — you do not need to reach a higher number.
+
+<Note>
+  Rolling alone can never trigger a win. The win check only runs inside `keepGlobalScore`, which is called exclusively when you click **HOLD**. You must bank your score to end the game.
+</Note>
+
+## How the winner is detected
+
+The turn indicator (red dot) is moved to the next player **before** the win check runs. This means the check reads the opponent's position to determine who just held:
+
+- If the dot is now on **Player 2** (i.e., Player 1 just held), and `mainScore >= 100`, the alert says `"player 1 you win!"`.
+- If the dot is now on **Player 1** (i.e., Player 2 just held), and `mainScore >= 100`, the alert says `"player 2 you win!"`.
+
+<Warning>
+  The win detection logic is inverted relative to the current dot position. The dot moves first, then the check fires against the new position. If you are reading the source code, note that `currentPlayer === "player2"` inside the win check means Player 1 won — not Player 2.
+</Warning>
+
+## What happens after a win
+
+When the win condition is met:
+
+1. A browser `alert()` announces the winner by name — `"player 1 you win!"` or `"player 2 you win!"`.
+2. `location.reload()` is called immediately after the alert is dismissed, which reloads the page and resets the entire game state.
+
+There is no separate end screen. The reload returns both players to the initial state, ready to click **NEW GAME** and start over.
+
+## Reaching 100 in a single hold
+
+You can win in a single hold from any global score if your current score is large enough. For example, a player with a global score of 85 who accumulates a current score of 15 or more in one turn wins immediately on hold:
+
+```text
+mainScore = 85 + 15 = 100  →  >= 100  →  win
+```
+
+There is no cap on how many points you can accumulate in a single turn, so large single-turn scores are possible — and sometimes necessary to close out a game.
+
+## Strategy near the 100-point threshold
+
+<Tip>
+  When your global score is 80 or higher, you are in a position to win in one or two turns. Consider holding earlier than usual — even a smaller current score might be enough to cross 100, and the risk of rolling a 1 and losing a large current score increases as stakes rise.
+</Tip>
+
+<Tip>
+  If your opponent is close to 100, play aggressively on your turn. Taking extra rolls to build a larger current score gives you a better chance of crossing 100 in fewer turns than your opponent needs.
+</Tip>
+
+<AccordionGroup>
+  <Accordion title="When to hold aggressively">
+    If your global score is, say, 92, you only need 8 more points to win. Rather than rolling repeatedly and risking a 1, hold as soon as your current score reaches 8 or more. A single roll of 2–6 might be all you need.
+  </Accordion>
+
+  <Accordion title="When to push past 100">
+    The win condition is `>= 100`, not `=== 100`. There is no advantage to landing on exactly 100 versus 110 — both trigger an immediate win. Do not hold prematurely just to hit the round number; hold when it is strategically safe.
+  </Accordion>
+
+  <Accordion title="Catching up when behind">
+    If your opponent has a large global score lead, conservative play will not save you. Accept the higher variance of longer turns — the expected gain per roll for dice showing 2–6 is 4 points, but the risk of a 1 is always 1 in 6. Calculate how many turns you realistically need and adjust your hold threshold accordingly.
+  </Accordion>
+</AccordionGroup>
+
+## Related pages
+
+<CardGroup cols={2}>
+  <Card title="Rules" icon="dice" href="/gameplay/rules">
+    Understand how turns work and what each button does.
+  </Card>
+  <Card title="Scoring" icon="trophy" href="/gameplay/scoring">
+    Learn how current and global scores are calculated and when they update.
+  </Card>
+</CardGroup>

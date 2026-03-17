@@ -1,0 +1,135 @@
+---
+title: "Scoring"
+description: "How current scores and global scores work in Lucky Roll Dice."
+---
+
+Lucky Roll Dice tracks two separate score values for each player at all times: a **current score** and a **global score**. Understanding the difference between them is essential to playing well.
+
+## Two score types
+
+<CardGroup cols={2}>
+  <Card title="Current score" icon="clock">
+    Displayed in the **CURRENT** panel on each player's side. Accumulates within a single turn. Resets to 0 if you roll a 1 or after you hold.
+  </Card>
+  <Card title="Global score" icon="trophy">
+    Displayed as the large red number above the player's name. Persists across turns. Only increases when you click **HOLD**.
+  </Card>
+</CardGroup>
+
+## Score initialization
+
+When you click **NEW GAME**, all four score values reset to 0:
+
+```javascript
+function beginGame() {
+  globalScore1.textContent = "0";
+  globalScore2.textContent = "0";
+  currentScore1.textContent = "0";
+  currentScore2.textContent = "0";
+  player1.append(dotPlayer); // Player 1 goes first
+}
+```
+
+No score from a previous game carries over.
+
+## How current score accumulates
+
+Each time you roll a 2–6, the result is added to your current score:
+
+```javascript
+function keepRoundScore(cs) {
+  let roundScore = parseInt(cs.textContent) + randomNumber;
+  // ...
+  cs.textContent = roundScore;
+  return roundScore;
+}
+```
+
+The formula is straightforward:
+
+```text
+currentScore = currentScore + dieResult
+```
+
+For example, if your current score is 7 and you roll a 5, your current score becomes 12.
+
+<Warning>
+  Rolling a 1 sets your current score back to 0 and ends your turn. You do not get to keep any points accumulated that turn.
+</Warning>
+
+## How global score updates
+
+When you click **HOLD**, your current score is added to your global score:
+
+```javascript
+function keepGlobalScore(cs, gs, player) {
+  let mainScore = parseInt(cs.textContent) + parseInt(gs.textContent);
+  gs.textContent = mainScore;
+  cs.textContent = 0;
+  player.append(dotPlayer);
+  // win check follows...
+}
+```
+
+The formula:
+
+```text
+globalScore = globalScore + currentScore
+currentScore = 0
+```
+
+After the hold, your current score resets to 0 and the turn passes to your opponent.
+
+<Note>
+  Your global score only ever increases — it can never decrease during a game. Only your current score is at risk on each roll.
+</Note>
+
+## Worked example
+
+The table below traces a sample game for Player 1 across several turns.
+
+| Event | Die result | Current score | Global score |
+|---|---|---|---|
+| Game starts | — | 0 | 0 |
+| Roll | 4 | 4 | 0 |
+| Roll | 3 | 7 | 0 |
+| Roll | 5 | 12 | 0 |
+| **Hold** | — | 0 | **12** |
+| Roll | 6 | 6 | 12 |
+| **Hold** | — | 0 | **18** |
+| Roll | 2 | 2 | 18 |
+| Roll | 5 | 7 | 18 |
+| Roll | 1 | **0** (reset) | 18 |
+| Roll (next turn) | 6 | 6 | 18 |
+| Roll | 4 | 10 | 18 |
+| **Hold** | — | 0 | **28** |
+
+Key observations from the example:
+
+- Rolling a 1 wipes the current score (turn 8–9) but leaves the global score untouched at 18.
+- Each **HOLD** commits exactly what is in the current score at that moment — no more, no less.
+- The global score grows only at hold events, not during rolling.
+
+## Score display locations
+
+| Element | HTML ID | What it shows |
+|---|---|---|
+| Player 1 global score | `#GS1` | Player 1's banked total |
+| Player 2 global score | `#GS2` | Player 2's banked total |
+| Player 1 current score | `#CS1` | Player 1's unbanked turn score |
+| Player 2 current score | `#CS2` | Player 2's unbanked turn score |
+
+<Tip>
+  Keep an eye on both your current score and your opponent's global score simultaneously. A large current score is only valuable once you hold it — until then, it is at risk.
+</Tip>
+
+## Related pages
+
+<CardGroup cols={2}>
+  <Card title="Rules" icon="dice" href="/gameplay/rules">
+    Learn how turns work, what each button does, and the roll-1 penalty.
+  </Card>
+  <Card title="Winning" icon="flag-checkered" href="/gameplay/winning">
+    Understand when and how the win condition is checked against the global score.
+  </Card>
+</CardGroup>

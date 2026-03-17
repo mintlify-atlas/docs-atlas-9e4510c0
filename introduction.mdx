@@ -1,0 +1,87 @@
+---
+title: "Introduction"
+description: "Learn what Lucky Roll Dice is and how it works."
+---
+
+Lucky Roll Dice is a two-player browser-based dice game built with vanilla JavaScript, HTML5, CSS3, and an Express.js static server. Two players take turns rolling a single six-sided die, racing to be the first to bank **100 global points**. Every roll is a calculated risk — push your luck for more points, or hold and stay safe.
+
+<CardGroup cols={2}>
+  <Card title="Quickstart" icon="rocket" href="/quickstart">
+    Get the game running on your machine in minutes.
+  </Card>
+  <Card title="Game rules" icon="dice" href="/gameplay/rules">
+    Read the complete turn-by-turn rules for Lucky Roll Dice.
+  </Card>
+  <Card title="Scoring" icon="trophy" href="/gameplay/scoring">
+    Understand current score, global score, and how points accumulate.
+  </Card>
+  <Card title="Code reference" icon="code" href="/reference/game-logic">
+    Explore the JavaScript functions that power the game.
+  </Card>
+</CardGroup>
+
+## How the game works
+
+The game description says it best: *"A very funny game based on fate, greed and patience, wins being intelligent, having patience and don't be greedy!"*
+
+Each turn follows the same loop:
+
+1. **Roll the dice.** If the result is 2–6, those points are added to your current (turn) score.
+2. **Rolling a 1 ends your turn immediately.** Your entire current score for that turn is lost and play passes to your opponent.
+3. **Hold to bank your score.** Click **HOLD** to add your current score to your global total, then hand the turn to your opponent.
+4. **First to 100 wins.** The moment a player's global score reaches or exceeds 100, the game ends and a winner is announced.
+
+<Note>
+  Your current score and global score are tracked separately. Rolling a 1 only wipes the current turn's score — your previously banked global points are always safe.
+</Note>
+
+## Tech stack
+
+<CardGroup cols={2}>
+  <Card title="Vanilla JavaScript" icon="js">
+    All game logic lives in `js/script.js`. No frameworks — just a single `DOMContentLoaded` listener that wires up the dice, scores, turn indicator, and win condition.
+  </Card>
+  <Card title="HTML5 & CSS3" icon="html5">
+    The UI is a single `index.html` page. Styles are split across Normalize CSS, reset-css, Bootstrap, and the custom `css/styles.css` file. The brand color is `#eb4d4c`.
+  </Card>
+  <Card title="Bootstrap" icon="bootstrap">
+    Bootstrap provides the responsive grid and base utility classes. A custom breakpoint at 1280px controls the wide-desktop layout.
+  </Card>
+  <Card title="Express.js" icon="server">
+    `server.js` is a minimal Express 4 static file server. It serves the game on port 3000 by default (or the `$PORT` environment variable).
+  </Card>
+</CardGroup>
+
+## Project structure
+
+The repository is intentionally small. Every file has a single responsibility:
+
+```text project layout
+roll-Dice/
+├── index.html        # Game UI — markup, Bootstrap, FontAwesome
+├── server.js         # Express static server (port 3000 / $PORT)
+├── package.json      # npm metadata; start script: node server.js
+├── js/
+│   └── script.js     # All game logic (DOMContentLoaded listener)
+└── css/
+    └── styles.css    # Custom styles and responsive breakpoints
+```
+
+<Info>
+  FontAwesome icons are used to render the individual dots on each die face (1–6), giving each roll a visual dice appearance in the browser.
+</Info>
+
+## Dependencies
+
+The project has two runtime dependencies, both declared in `package.json`:
+
+| Package | Version | Purpose |
+|---|---|---|
+| `express` | `^4.19.2` | Static file server |
+| `reset-css` | `^5.0.2` | CSS reset for consistent cross-browser baseline |
+
+There are no build tools, bundlers, or transpilation steps. After `npm install`, the project is ready to run.
+
+## Ready to play?
+
+Head to the [Quickstart](/quickstart) to clone the repo, install dependencies, and open the game in your browser in under two minutes.
