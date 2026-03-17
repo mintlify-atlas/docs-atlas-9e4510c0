@@ -1,0 +1,59 @@
+{
+  "projectType": "frontend",
+  "projectName": "Lucky Roll Dice",
+  "projectDescription": "A two-player browser-based dice game where players roll to accumulate points, balancing greed and patience to be the first to reach 100.",
+  "theme": "almond",
+  "primaryColor": "#eb4d4c",
+  "lightColor": null,
+  "darkColor": null,
+  "navigation": {
+    "tabs": [
+      {
+        "tab": "Guide",
+        "groups": [
+          {
+            "group": "Get Started",
+            "pages": ["introduction", "quickstart"]
+          },
+          {
+            "group": "Gameplay",
+            "pages": ["gameplay/rules", "gameplay/scoring", "gameplay/winning"]
+          },
+          {
+            "group": "Running Locally",
+            "pages": ["local/setup", "local/running"]
+          }
+        ]
+      },
+      {
+        "tab": "Reference",
+        "groups": [
+          {
+            "group": "Code Reference",
+            "pages": ["reference/game-logic", "reference/ui-components"]
+          }
+        ]
+      }
+    ]
+  },
+  "keyFeatures": [
+    "Two-player turn-based dice rolling gameplay",
+    "Visual dice face rendering with dot patterns for each number 1–6",
+    "Current score accumulation per turn with risk/reward hold mechanic",
+    "Global score tracking across rounds until a player reaches 100",
+    "Rolling a 1 immediately ends the current player's turn and resets their current score",
+    "Responsive layout for both mobile and desktop (1280px+ breakpoint)",
+    "Warm wood-tone gradient background with clean card UI",
+    "Express.js static file server for easy local hosting"
+  ],
+  "publicApiSurface": [
+    "beginGame() — resets all scores and starts a new game with Player 1's turn",
+    "generateRandomFace() — rolls the dice, updates current score, and advances turn on a roll of 1",
+    "handleHoldScore() — saves the current player's score to global and passes the turn",
+    "showDiceFaceGenerated() — renders the correct dot pattern on the dice UI element",
+    "generateRandomInt(min, max) — utility returning a random integer in [min, max)",
+    "keepRoundScore(cs) — updates the current-score display and handles turn loss on 1",
+    "keepGlobalScore(cs, gs, player) — commits current score to global and checks for win condition",
+    "checkDotPlayerPosition() — returns which player currently holds the active-turn indicator"
+  ]
+}
